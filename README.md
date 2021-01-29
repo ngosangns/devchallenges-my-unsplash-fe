@@ -1,24 +1,6 @@
-# my-unplash
-
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### devChallenges: My unsplash
+Challenge link: [https://devchallenges.io/challenges/rYyhwJAxMfES5jNQ9YsP](https://devchallenges.io/challenges/rYyhwJAxMfES5jNQ9YsP)  
+Solution:
+- Demo web: [https://ngosangns-myunsplash.web.app](https://ngosangns-myunsplash.web.app)
+- Demo API: [https://ngosangns-my-unsplash.herokuapp.com](https://ngosangns-my-unsplash.herokuapp.com)
+- API repository: [https://github.com/ngosangns/devchallenges-my-unsplash-api](https://github.com/ngosangns/devchallenges-my-unsplash-api)
