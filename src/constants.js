@@ -1,0 +1,1 @@
+export default "https://ngosangns-my-unsplash.herokuapp.com"
