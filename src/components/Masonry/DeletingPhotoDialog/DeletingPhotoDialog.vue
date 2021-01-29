@@ -1,5 +1,5 @@
 <template>
-    <vs-dialog :not-close="true" v-model="enableDialog.value" overflow-hidden prevent-close>
+    <vs-dialog :not-close="true" v-model="enableDialog.value" prevent-close>
       <template #header>
         <h4>Delete photo</h4>
       </template>
