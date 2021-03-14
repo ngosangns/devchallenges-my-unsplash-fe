@@ -41,7 +41,6 @@
 </template>
 <script>
 import axios from "axios"
-import host from "@/constants.js"
 
 export default {
     name: "DeletingPhotoDialog",
@@ -69,49 +68,42 @@ export default {
 
         let loading = this.createLoading()
         // Send
-        axios({
-          method: 'get',
-          url: host+"/delete/"+this.photo.value._id,
-          headers: {'Password': this.password}
-        })
-        .then(() => {
-          // Notification
-          this.$vs.notification({
-            duration: 3000,
-            color: "danger",
-            title: "",
-            text: "Deleted!"
+        axios.get(process.env.VUE_APP_DELETE + "?id=" + this.photo.value._id, {
+            headers: {'Password': this.password}
           })
-          this.$store.commit("removeImage", this.photo.value)
-        })
-        .catch(err => {
-          // Check response message
-          if (err.response) {
-            if([501].includes(err.response.status)) {
+          .then(res => {
+            if(res.data.status) {
+              // Notification
+              this.$vs.notification({
+                duration: 3000,
+                color: "danger",
+                title: "",
+                text: "Deleted!"
+              })
+              this.$store.commit("removeImage", this.photo.value)
+            } else {
               this.$vs.notification({
                 color: "danger",
                 duration: 3000,
-                title: '',
-                text: err.response.data.message
+                title: "",
+                text: res.data.message,
               })
             }
-          }
-          else {
+          })
+          .catch(err => {
             this.$vs.notification({
               color: "danger",
               duration: 3000,
               title: "",
               text: "Error while requesting",
             })
-          }
-
-          throw new Error(err)
-        })
-        .finally(() => {
-          this.clearForm()
-          this.enableDialog.value = false
-          loading.close()
-        })
+            throw err
+          })
+          .finally(() => {
+            this.clearForm()
+            this.enableDialog.value = false
+            loading.close()
+          })
       },
       createLoading: function() {
         const loading = this.$vs.loading()

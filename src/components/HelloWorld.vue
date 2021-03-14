@@ -59,11 +59,11 @@ import Masonry from "./Masonry/Masonry.vue"
 import AddingPhotoDialog from "./AddingPhotoDialog/AddingPhotoDialog.vue"
 
 import axios from "axios"
-import host from "@/constants.js"
 
 export default {
   name: 'HelloWorld',
   data: () => ({
+    state: "off",
     enableAddingPhotoDialog: {
       value: false
     },
@@ -103,31 +103,41 @@ export default {
     },
     getData: function() {
       // Open loading
+      this.states = "loading"
       const loading = this.$vs.loading({
         target: document.getElementById("masonry"),
         background: "transparent",
       })
       // Get data
-      axios({
-        method: 'get',
-        url: host+'/get',
-      })
-      .then(res => {
-        this.$store.commit("setImages", res.data.reverse())
-      })
-      .catch(() => {
-        this.$vs.notification({
-          color: "danger",
-          duration: 3000,
-          title: "",
-          text: "Error while requesting",
+      axios.get(process.env.VUE_APP_GET)
+        .then(res => {
+          if(res.data.status) {
+            this.$store.commit("setImages", res.data.message.reverse())
+          } else {
+            this.$vs.notification({
+              color: "danger",
+              duration: 3000,
+              title: "",
+              text: "Error while requesting",
+            })
+          }
         })
-      })
-      .finally(() => {
-        loading.close()
-      })
+        .catch((err) => {
+          console.log(err)
+          this.$vs.notification({
+            color: "danger",
+            duration: 3000,
+            title: "",
+            text: "Error while requesting",
+          })
+        })
+        .finally(() => {
+          loading.close()
+          this.state = "off"
+        })
     },
     addPhoto: function() {
+      if(this.state == "loading") return
       this.enableAddingPhotoDialog.value = true
     },
     search(e) {
@@ -136,49 +146,41 @@ export default {
       // Validate
       if(!searchText.length) return
 
-      console.log(searchText)
-
       // Open loading
+      this.state = "loading"
       const loading = this.$vs.loading({
         target: document.getElementById("masonry"),
         background: "transparent",
       })
       // Search request
-      axios({
-        method: 'get',
-        url: host+'/search?query='+searchText,
-      })
-      .then(res => {
-        this.$store.commit("setImages", res.data.reverse())
-        this.enableSearchTitle.value = true
-        this.searchText = searchText
-      })
-      .catch((err) => {
-        // Check response message
-        if (err.response) {
-          if([501].includes(err.response.status)) {
+      axios.get(process.env.VUE_APP_SEARCH+'?query='+searchText)
+        .then(res => {
+          if(res.data.status) {
+            this.$store.commit("setImages", res.data.message.reverse())
+            this.enableSearchTitle.value = true
+            this.searchText = searchText
+          } else {
             this.$vs.notification({
-              color: "danger",
-              duration: 3000,
-              title: '',
-              text: err.response.data.message
-            })
+                color: "danger",
+                duration: 3000,
+                title: '',
+                text: res.data.message
+              })
           }
-        }
-        else {
+        })
+        .catch((err) => {
           this.$vs.notification({
             color: "danger",
             duration: 3000,
             title: "",
             text: "Error while requesting",
           })
-        }
-
-        throw new Error(err)
-      })
-      .finally(() => {
-        loading.close()
-      })
+          throw err
+        })
+        .finally(() => {
+          loading.close()
+          this.state = "off"
+        })
     }
   },
   mounted: function() {

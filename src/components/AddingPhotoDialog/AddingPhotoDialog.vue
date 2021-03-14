@@ -43,7 +43,6 @@
 </template>
 <script>
 import axios from "axios"
-import host from "@/constants.js"
 
 export default {
     name: "AddingPhotoDialog",
@@ -92,17 +91,18 @@ export default {
         // Send
         axios({
           method: 'post',
-          url: host+'/create',
+          url: process.env.VUE_APP_CREATE,
           data: formData,
         }).then(res => {
-          // Notification
+          if(!res.data.status) throw new Error()
+
           this.$vs.notification({
             color: "success",
             duration: 3000,
             title: "",
             text: "Upload success!"
           })
-          this.$store.commit("unshiftImage", res.data)
+          this.$store.commit("unshiftImage", res.data.message)
           this.clearForm()
           this.enableDialog.value = false
         })

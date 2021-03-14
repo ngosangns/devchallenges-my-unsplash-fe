@@ -24,7 +24,7 @@ const store = new Vuex.Store({
       state.images.push(arr)
     },
     setImages: (state, arr) => {
-      state.images = arr
+      state.images = [...arr]
     },
     unshiftImage: (state, el) => {
       state.images.unshift(el)
